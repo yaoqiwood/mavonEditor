@@ -1,7 +1,7 @@
 <template>
     <div :class="[{ 'fullscreen': s_fullScreen, 'shadow': boxShadow }]" class="v-note-wrapper markdown-body" :style="{'box-shadow': boxShadow ? boxShadowStyle : ''}">
         <!--工具栏-->
-        <div class="v-note-op" v-show="toolbarsFlag" :style="{'background': toolbarsBackground}">
+        <div class="v-note-op" v-show="toolbarsFlag" :style="{'background-color': toolbarsBackground}">
             <v-md-toolbar-left ref="toolbar_left" :editable="editable" :transition="transition" :d_words="d_words"
                                @toolbar_left_click="toolbar_left_click" @toolbar_left_addlink="toolbar_left_addlink" :toolbars="toolbars"
                                @imgAdd="$imgAdd" @imgDel="$imgDel" @imgTouch="$imgTouch" :image_filter="imageFilter"
@@ -144,7 +144,9 @@ export default {
         },
         toolbarsBackground: { // 工具栏背景色
             type: String,
-            default: '#ffffff'
+            default: '#8570b3'
+            // default: '#ffffff'
+            // default: '#757575'
         },
         editorBackground: { // TODO: 编辑栏背景色
             type: String,
@@ -437,6 +439,7 @@ export default {
             // TODO 跳转到图片位置
         },
         $imgDel(file) {
+            // this.markdownIt.image_del(file[1]);
             this.markdownIt.image_del(file[1]);
             // 删除所有markdown中的图片
             let fileReg = file[0]
@@ -447,6 +450,7 @@ export default {
             this.$emit('imgDel', file);
         },
         $imgAdd(pos, $file, isinsert) {
+            // console.log(this.markdownIt)
             if (isinsert === undefined) isinsert = true;
             var $vm = this;
             if (this.__rFilter == null) {
@@ -677,6 +681,11 @@ export default {
     },
     watch: {
         d_value: function (val, oldVal) {
+            // console.log(val)
+            // TODO: 这里根据需求要实现一个功能 ： 对图片复制后，对图片块 MD 文字区域进行对比 若发生用户误操作修改文字区域 则整块删除图片文字
+            /**
+             * TODO: 实行细则 将newValue oldValue进行正则对比 并且以数组添加，如果对比后发生长度一致，则对数组中每一个字符串成员进行对比 相同不做任何操作 相反 则去对应图片队列中删除相应的待上传图片
+             */
             this.saveSelectionEndsHistory();
             this.iRender();
         },
@@ -728,4 +737,5 @@ export default {
     .auto-textarea-wrapper {
         height: 100%;
     }
+
 </style>
