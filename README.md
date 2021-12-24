@@ -1,3 +1,8 @@
+# 感谢大佬的无私分享，这次决定Fork过来主要还是想说能不能修改一些更有趣的内容进行来丰富博客系统
+
+[x] 完成了工具栏的基本颜色更改和图片颜色更改 #846fb2
+
+
 # mavonEditor
 
 | Vue2 | [![npm](https://img.shields.io/npm/v/mavon-editor/latest.svg)](https://www.npmjs.com/package/mavon-editor/v/latest) |
