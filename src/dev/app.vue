@@ -11,11 +11,12 @@
             <option value="ru">Русский</option>
         </select>
         <section class="page-header">
-            <h1 class="project-name">mavonEditor</h1>
+            <h1 class="project-name">mavonEditor 超级魔改版</h1>
+            <h1 class="project-name">created By hinesboy；modified by Mikko柴柴</h1>
             <h3 class="project-tagline">{{d_words.sub_title}}</h3>
-            <a href="https://github.com/hinesboy/mavonEditor" class="btn">View on GitHub</a>
-            <a href="https://github.com/hinesboy/mavonEditor/zipball/master" class="btn">Download .zip</a>
-            <a href="https://github.com/hinesboy/mavonEditor/master" class="btn">Download .tar.gz</a>
+            <a href="https://github.com/yaoqiwood/mavonEditor" class="btn">View on GitHub</a>
+            <a href="https://github.com/yaoqiwood/mavonEditor/zipball/master" class="btn">Download .zip</a>
+            <a href="https://github.com/yaoqiwood/mavonEditor/master" class="btn">Download .tar.gz</a>
         </section>
         <div v-if="!screen_phone" class="item">
             <h2 class="item-header">
@@ -46,7 +47,6 @@
                           :transition="true"
                           :codeStyle="codeStyle"
                           box-shadow-style="0 2px 12px 0 rgba(0, 0, 0, 0.1)"
-                          toolbars-background="#ffffff"
                           preview-background="#fbfbfb">
                 <!-- <template slot="left-toolbar-before">
                     左工具栏前
