@@ -109,7 +109,7 @@ import {
     loadScript,
     ImagePreviewListener
 } from './lib/core/extra-function.js'
-import {stopEvent} from './lib/util.js'
+import {stopEvent, mathchRegPicText} from './lib/util.js'
 import {toolbar_left_click, toolbar_left_addlink} from './lib/toolbar_left_click.js'
 import {toolbar_right_click} from './lib/toolbar_right_click.js'
 import {CONFIG} from './lib/config.js'
@@ -677,12 +677,22 @@ export default {
         $emptyHistory() {
             this.d_history = [this.d_value] // 编辑记录
             this.d_history_index = 0 // 编辑记录索引
+        },
+        // 比对旧数组 旧数组length 是 null 或者 zero， 则直接return， 否则开始比对size是否相等，若新数组大于旧数组，则去待上传数组中检测是否相等，多还少补，若小于旧数组，则去对应待上传队列删除此多余图片
+        checkTextImg(oldArray, newArray) {
+            if (oldArray == null || oldArray.length === 0) return null
+            if (newArray.length > oldArray.length) {
+
+            }
         }
     },
     watch: {
         d_value: function (val, oldVal) {
             // console.log(val)
             // TODO: 这里根据需求要实现一个功能 ： 对图片复制后，对图片块 MD 文字区域进行对比 若发生用户误操作修改文字区域 则整块删除图片文字
+            let oldArray = mathchRegPicText(oldVal)
+            let newArray = mathchRegPicText(val)
+
             /**
              * TODO: 实行细则 将newValue oldValue进行正则对比 并且以数组添加，如果对比后发生长度一致，则对数组中每一个字符串成员进行对比 相同不做任何操作 相反 则去对应图片队列中删除相应的待上传图片
              */
