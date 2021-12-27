@@ -702,6 +702,7 @@ export default {
             }
             console.log("different:")
             console.log(differArray)
+            console.log(this.$refs['toolbar_left'].img_file)
         }
     },
     watch: {
