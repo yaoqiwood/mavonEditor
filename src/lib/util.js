@@ -58,7 +58,8 @@ export function stopEvent(e) {
  */
 export function mathchRegPicText(str) {
   if (str == null || str === '') return null
+  // ^(```)[\s\S]+(```)$
   // let regex = /\!\[[\u4e00-\u9fa5_a-zA-Z0-9]{1,18}\.(jpg|png|gif)\]\([1-9]{1,9}\)/gm;
-  let regex = /\!\[[\s\S]{1,100}\.(jpg|png|gif)\]\([1-9]{1,9}\)/gm;
+  let regex = /\!\[[\u4e00-\u9fa5_a-zA-Z0-9@.]{1,100}\.(jpg|png|gif)\]\([1-9]{1,9}\)/gm;
   return str.match(regex)
 }

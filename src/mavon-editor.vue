@@ -463,8 +463,7 @@ export default {
                 $file.miniurl = oFREvent.target.result;
                 if (isinsert === true) {
                     // 去除特殊字符
-                    $file._name = $file.name.replace(/[\[\]\(\)\+\{\}&\|\\\*^%$#@\-]/g, '');
-
+                    $file._name = $file.name.replace(/[\[\]\(\)\+\{\}&\|\\\*^%$#@\-\s]/g, '');
                     $vm.insertText($vm.getTextareaDom(),
                         {
                             prefix: '![' + $file._name + '](' + pos + ')',
@@ -681,9 +680,28 @@ export default {
         // 比对旧数组 旧数组length 是 null 或者 zero， 则直接return， 否则开始比对size是否相等，若新数组大于旧数组，则去待上传数组中检测是否相等，多还少补，若小于旧数组，则去对应待上传队列删除此多余图片
         checkTextImg(oldArray, newArray) {
             if (oldArray == null || oldArray.length === 0) return null
-            if (newArray.length > oldArray.length) {
-
+            let differArray = []
+            console.log(oldArray)
+            console.log(newArray)
+            if (newArray.length < oldArray.length) {
+                for (let oldKey in oldArray) {
+                    if (newArray.length === 0) {
+                        differArray.push(oldArray[oldKey])
+                        break
+                    }
+                    for (let newKey in newArray) {
+                      if (oldArray[oldKey] === newArray[newKey]) {
+                          break
+                      }
+                      if ((parseInt(newKey) + 1) === newArray.length) {
+                          differArray.push(oldArray[oldKey])
+                      }
+                   }
+                }
+                // let regex = /\.(jpg|png|gif)\]\([0-9]{1,9}\)$/
             }
+            console.log("different:")
+            console.log(differArray)
         }
     },
     watch: {
@@ -693,6 +711,7 @@ export default {
             let oldArray = mathchRegPicText(oldVal)
             let newArray = mathchRegPicText(val)
 
+            this.checkTextImg(oldArray, newArray == null ? [] : newArray)
             /**
              * TODO: 实行细则 将newValue oldValue进行正则对比 并且以数组添加，如果对比后发生长度一致，则对数组中每一个字符串成员进行对比 相同不做任何操作 相反 则去对应图片队列中删除相应的待上传图片
              */
