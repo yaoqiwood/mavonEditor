@@ -72,21 +72,21 @@
                     <div class="dropdown-item" style="overflow: hidden">
                         <input type="file" accept="image/gif,image/jpeg,image/jpg,image/png,image/svg" @change="$imgAdd($event)" multiple="multiple"/>{{d_words.tl_upload}}
                     </div>
-
-                    <div
-                        v-for="(item, index) in img_file"
-                        v-if="item && item[1]"
-                        class="dropdown-item dropdown-images"
-                        :title="item[1].name"
-                        :key="index"
-                        @click.stop="$imgFileListClick(index)"
-                    >
-                        <span>{{item[1].name}}</span>
-                        <button slot="right" type="button" @click.stop="$imgDel(index)"
-                                class="op-icon fa fa-mavon-times" aria-hidden="true"
-                                :title="d_words.tl_upload_remove"></button>
-                        <!-- 缩略图展示 -->
-                        <img class = "image-show" :class="{'transition': transition}" :src="item[1].miniurl" alt="none">
+                    <div v-if="img_list_show">
+                         <div v-for="(item, index) in img_file">
+                            <div v-if="item && !item.isDelete && item[1]"
+                                :title="item[1].keyName"
+                                class="dropdown-item dropdown-images"
+                                :key="index"
+                                @click.stop="$imgFileListClick(index)">
+                                <span>{{item[1].name}}</span>
+                                <button slot="right" type="button" @click.stop="$imgDel(index)"
+                                        class="op-icon fa fa-mavon-times" aria-hidden="true"
+                                        :title="d_words.tl_upload_remove"></button>
+                                <!-- 缩略图展示 -->
+                                <img class = "image-show" :class="{'transition': transition}" :src="item[1].miniurl" alt="none">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </transition>
@@ -170,7 +170,8 @@
                 num: 0,
                 link_text: '',
                 link_addr: '',
-                link_type: 'link'
+                link_type: 'link',
+                img_list_show: true
             }
         },
         methods: {
@@ -198,7 +199,7 @@
                 // this.img_file[0][1] = $file;
                 // this.img_file.unshift([(this.num + 1), null]);
                 // this.num = this.num + 1;
-                this.img_file.push([++this.num, $file])
+                this.img_file.push([++this.num, $file, {'isDelete': false}])
                 this.$emit('imgAdd', this.num, $file);
                 this.s_img_dropdown_open = false;
             },
@@ -219,7 +220,8 @@
             },
             $imgDel(pos) {
                 this.$emit('imgDel', this.img_file[pos]);
-               this.img_file.splice(pos, 1);
+            //    this.img_file.splice(pos, 1);
+            // TODO: splice改 delete
                this.num--;
 
                 this.s_img_dropdown_open = false;
@@ -315,6 +317,13 @@
             s_img_link_open(newVlaue) {
               // fix issue #644
               this.$parent.$el.style.zIndex = newVlaue ? 1501 : 1500;
+            },
+            img_file(val) {
+                this.img_list_show = false
+                // console.log(val)
+                this.$nextTick(() => { // $nextTick 是在 DOM 更新循环结束之后执行延迟回调
+                    this.img_list_show = true
+                })
             }
         }
     }

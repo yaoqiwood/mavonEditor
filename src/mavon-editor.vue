@@ -470,6 +470,9 @@ export default {
                             subfix: '',
                             str: ''
                         });
+                    // 新增KeyName方便查找
+                    $file.keyName = '![' + $file._name + '](' + pos + ')'
+                    // $file.isDelete = false
                     $vm.$nextTick(function () {
                         $vm.$emit('imgAdd', pos, $file);
                     })
@@ -687,7 +690,7 @@ export default {
                 for (let oldKey in oldArray) {
                     if (newArray.length === 0) {
                         differArray.push(oldArray[oldKey])
-                        break
+                        continue
                     }
                     for (let newKey in newArray) {
                       if (oldArray[oldKey] === newArray[newKey]) {
@@ -702,13 +705,25 @@ export default {
             }
             console.log("different:")
             console.log(differArray)
-            console.log(this.$refs['toolbar_left'].img_file)
+            // console.log(this.$refs['toolbar_left'].img_file)
+            if (differArray.length === 0) return null
+            for (let key in differArray) {
+                // console.log(this.$refs['toolbar_left'].img_file[1][1]._name)
+                let imgArray = this.$refs['toolbar_left'].img_file.filter(item => item[1] != null && item[1].keyName === differArray[key])
+                if (imgArray.length === 0) continue;
+                // console.log(imgArray[0][0])
+                // this.$refs['toolbar_left'].img_file.splice(imgArray[0][0], 1)
+                // console.log(this.$refs['toolbar_left'].img_file)
+                // this.$refs['toolbar_left'].img_file[imgArray[0][0]].isDelete = true
+                this.$set(this.$refs['toolbar_left'].img_file[imgArray[0][0]],'isDelete', true)
+                console.log(this.$refs['toolbar_left'].img_file[imgArray[0][0]].isDelete)
+            }
         }
     },
     watch: {
         d_value: function (val, oldVal) {
             // console.log(val)
-            // TODO: 这里根据需求要实现一个功能 ： 对图片复制后，对图片块 MD 文字区域进行对比 若发生用户误操作修改文字区域 则整块删除图片文字
+            // TODO: 这里根据需求要实现一个功能 ： 对图片复制后，对图片块 MD 文字区域进行对比 若发生用户误操作修改文字区域
             let oldArray = mathchRegPicText(oldVal)
             let newArray = mathchRegPicText(val)
 
