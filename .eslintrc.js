@@ -26,7 +26,7 @@ module.exports = {
     // 忽略;
     'semi':0,
     // 忽略缩进
-    'indent':0,
+    'indent':2,
     // camel case
     'camelcase':0,
     // 键值对:后强制空格

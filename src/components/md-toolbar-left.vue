@@ -134,198 +134,198 @@
 </template>
 <script type="text/ecmascript-6">
     export default {
-        name: 's-md-toolbar-left',
-        props: {
-            editable: { // 是否开启编辑
-                type: Boolean,
-                default: true
-            },
-            transition: { // TODO: 是否开启动画过渡
-                type: Boolean,
-                default: true
-            },
-            toolbars: { // 工具栏
-                type: Object,
-                required: true
-            },
-            d_words: {
-                type: Object,
-                required: true
-            },
-            image_filter: {
-                type: Function,
-                default: null
-            }
+      name: 's-md-toolbar-left',
+      props: {
+        editable: { // 是否开启编辑
+          type: Boolean,
+          default: true
         },
-        data() {
-            return {
-                // [index, file]
-                img_file: [[0, null]],
-                img_timer: null,
-                header_timer: null,
-                s_img_dropdown_open: false,
-                s_header_dropdown_open: false,
-                s_img_link_open: false,
-                trigger: null,
-                num: 0,
-                link_text: '',
-                link_addr: '',
-                link_type: 'link',
-                img_list_show: true
-            }
+        transition: { // TODO: 是否开启动画过渡
+          type: Boolean,
+          default: true
         },
-        methods: {
-            $imgLinkAdd() {
-                this.$emit('toolbar_left_addlink', this.link_type, this.link_text, this.link_addr);
-                this.s_img_link_open = false;
-            },
-            $toggle_imgLinkAdd(type) {
-                this.link_type = type;
-                this.link_text = this.link_addr = '';
-                this.s_img_link_open = true;
-                this.$nextTick(() => {
-                    this.$refs.linkTextInput.focus()
-                })
-                this.s_img_dropdown_open = false;
-            },
-            $imgFileListClick(pos) {
-                this.$emit('imgTouch', this.img_file[pos]);
-            },
-            $changeUrl(index,url) {
-                this.img_file[index][0] = url;
-            },
-            $imgFileAdd($file) {
-                // this.img_file[0][0] = this.num;
-                // this.img_file[0][1] = $file;
-                // this.img_file.unshift([(this.num + 1), null]);
-                // this.num = this.num + 1;
-                this.img_file.push([++this.num, $file, {'isDelete': false}])
-                this.$emit('imgAdd', this.num, $file);
-                this.s_img_dropdown_open = false;
-            },
-            $imgFilesAdd($files) {
-                // valid means if the image_filter exist.
-                let valid = (typeof this.image_filter === 'function');
-                for (let i = 0; i < $files.length; i++) {
-                    if (valid && this.image_filter($files[i]) === true) {
-                        this.$imgFileAdd($files[i]);
-                    } else if (!valid && $files[i].type.match(/^image\//i)) {
-                        this.$imgFileAdd($files[i]);
-                    }
-                }
-            },
-            $imgAdd($e) {
-                this.$imgFilesAdd($e.target.files);
-                $e.target.value = ''; // 初始化
-            },
-            $imgDel(pos) {
-                this.$emit('imgDel', this.img_file[pos]);
-            //    this.img_file.splice(pos, 1);
-            // TODO: splice改 delete
-               this.num--;
-
-                this.s_img_dropdown_open = false;
-            },
-            isEqualName(filename, pos) {
-                if (this.img_file[pos][1]) {
-                    if (this.img_file[pos][1].name === filename || this.img_file[pos][1]._name === filename) {
-                        return true
-                    }
-                }
-                return false
-            },
-            $imgDelByFilename(filename) {
-                var pos = 0;
-                while (this.img_file.length > pos) {
-                    if (this.img_file[pos][1] === filename || this.isEqualName(filename, pos)) {
-                        this.$imgDel(pos);
-                        return true;
-                    }
-                    pos += 1;
-                }
-                return false;
-            },
-            $imgAddByFilename(filename, $file) {
-                for (var i = 0; i < this.img_file.length; i++)
-                    { if (this.img_file[i][0] === filename) return false; }
-                this.img_file[0][0] = filename;
-                this.img_file[0][1] = $file;
-                this.img_file[0][2] = filename;
-                this.img_file.unshift(['./' + (this.num), null])
-                this.$emit('imgAdd', this.img_file[1][0], $file, false);
-                return true;
-            },
-            $imgAddByUrl(filename, $url) {
-                for (var i = 0; i < this.img_file.length; i++)
-                    { if (this.img_file[i][0] === filename) return false; }
-                this.img_file[0][0] = filename;
-                this.img_file[0][1] = $url;
-                this.img_file.unshift(['./' + (this.num), null])
-                return true;
-            },
-            $imgUpdateByFilename(filename, $file) {
-                for (var i = 0; i < this.img_file.length; i++) {
-                    if (this.img_file[i][0] === filename || this.isEqualName(filename, i)) {
-                        this.img_file[i][1] = $file;
-                        this.$emit('imgAdd', filename, $file, false);
-                        return true;
-                    }
-                }
-                return false;
-            },
-            // 工具栏功能图标click-----------------
-            $mouseenter_img_dropdown() {
-                if (this.editable) {
-                    clearTimeout(this.img_timer)
-                    this.s_img_dropdown_open = true
-                }
-            },
-            $mouseleave_img_dropdown() {
-                let vm = this
-                this.img_timer = setTimeout(function() {
-                    vm.s_img_dropdown_open = false
-                },200)
-            },
-            $mouseenter_header_dropdown() {
-                if (this.editable) {
-                    clearTimeout(this.header_timer)
-                    this.s_header_dropdown_open = true
-                }
-            },
-            $mouseleave_header_dropdown() {
-                let vm = this
-                this.header_timer = setTimeout(function() {
-                    vm.s_header_dropdown_open = false
-                },200)
-            },
-            $clicks(_type) {
-                // 让父节点来绑定事件并
-                if (this.editable) {
-                    this.$emit('toolbar_left_click', _type);
-                }
-            },
-            $click_header(_type) {
-                // 让父节点来绑定事件并
-                this.$emit('toolbar_left_click', _type);
-                this.s_header_dropdown_open = false
-            },
-            handleClose(e) {
-                this.s_img_dropdown_open = false;
-            }
+        toolbars: { // 工具栏
+          type: Object,
+          required: true
         },
-        watch:{
-            s_img_link_open(newVlaue) {
-              // fix issue #644
-              this.$parent.$el.style.zIndex = newVlaue ? 1501 : 1500;
-            },
-            img_file(val) {
-                this.img_list_show = false
-                // console.log(val)
-                this.$nextTick(() => { // $nextTick 是在 DOM 更新循环结束之后执行延迟回调
-                    this.img_list_show = true
-                })
-            }
+        d_words: {
+          type: Object,
+          required: true
+        },
+        image_filter: {
+          type: Function,
+          default: null
         }
+      },
+      data() {
+        return {
+          // [index, file]
+          img_file: [[0, null]],
+          img_timer: null,
+          header_timer: null,
+          s_img_dropdown_open: false,
+          s_header_dropdown_open: false,
+          s_img_link_open: false,
+          trigger: null,
+          num: 0,
+          link_text: '',
+          link_addr: '',
+          link_type: 'link',
+          img_list_show: true
+        }
+      },
+      methods: {
+        $imgLinkAdd() {
+          this.$emit('toolbar_left_addlink', this.link_type, this.link_text, this.link_addr);
+          this.s_img_link_open = false;
+        },
+        $toggle_imgLinkAdd(type) {
+          this.link_type = type;
+          this.link_text = this.link_addr = '';
+          this.s_img_link_open = true;
+          this.$nextTick(() => {
+            this.$refs.linkTextInput.focus()
+          })
+          this.s_img_dropdown_open = false;
+        },
+        $imgFileListClick(pos) {
+          this.$emit('imgTouch', this.img_file[pos]);
+        },
+        $changeUrl(index,url) {
+          this.img_file[index][0] = url;
+        },
+        $imgFileAdd($file) {
+          // this.img_file[0][0] = this.num;
+          // this.img_file[0][1] = $file;
+          // this.img_file.unshift([(this.num + 1), null]);
+          // this.num = this.num + 1;
+          this.img_file.push([++this.num, $file, {'isDelete': false}])
+          this.$emit('imgAdd', this.num, $file);
+          this.s_img_dropdown_open = false;
+        },
+        $imgFilesAdd($files) {
+          // valid means if the image_filter exist.
+          let valid = (typeof this.image_filter === 'function');
+          for (let i = 0; i < $files.length; i++) {
+            if (valid && this.image_filter($files[i]) === true) {
+              this.$imgFileAdd($files[i]);
+            } else if (!valid && $files[i].type.match(/^image\//i)) {
+              this.$imgFileAdd($files[i]);
+            }
+          }
+        },
+        $imgAdd($e) {
+          this.$imgFilesAdd($e.target.files);
+          $e.target.value = ''; // 初始化
+        },
+        $imgDel(pos) {
+          this.$emit('imgDel', this.img_file[pos]);
+          this.$set(this.img_file[pos] ,'isDelete', true)
+          //    this.img_file.splice(pos, 1);
+          this.num--;
+
+          this.s_img_dropdown_open = false;
+        },
+        isEqualName(filename, pos) {
+          if (this.img_file[pos][1]) {
+            if (this.img_file[pos][1].name === filename || this.img_file[pos][1]._name === filename) {
+              return true
+            }
+          }
+          return false
+        },
+        $imgDelByFilename(filename) {
+          var pos = 0;
+          while (this.img_file.length > pos) {
+            if (this.img_file[pos][1] === filename || this.isEqualName(filename, pos)) {
+              this.$imgDel(pos);
+              return true;
+            }
+            pos += 1;
+          }
+          return false;
+        },
+        $imgAddByFilename(filename, $file) {
+          for (var i = 0; i < this.img_file.length; i++)
+          { if (this.img_file[i][0] === filename) return false; }
+          this.img_file[0][0] = filename;
+          this.img_file[0][1] = $file;
+          this.img_file[0][2] = filename;
+          this.img_file.unshift(['./' + (this.num), null])
+          this.$emit('imgAdd', this.img_file[1][0], $file, false);
+          return true;
+        },
+        $imgAddByUrl(filename, $url) {
+          for (var i = 0; i < this.img_file.length; i++)
+          { if (this.img_file[i][0] === filename) return false; }
+          this.img_file[0][0] = filename;
+          this.img_file[0][1] = $url;
+          this.img_file.unshift(['./' + (this.num), null])
+          return true;
+        },
+        $imgUpdateByFilename(filename, $file) {
+          for (var i = 0; i < this.img_file.length; i++) {
+            if (this.img_file[i][0] === filename || this.isEqualName(filename, i)) {
+              this.img_file[i][1] = $file;
+              this.$emit('imgAdd', filename, $file, false);
+              return true;
+            }
+          }
+          return false;
+        },
+        // 工具栏功能图标click-----------------
+        $mouseenter_img_dropdown() {
+          if (this.editable) {
+            clearTimeout(this.img_timer)
+            this.s_img_dropdown_open = true
+          }
+        },
+        $mouseleave_img_dropdown() {
+          let vm = this
+          this.img_timer = setTimeout(function() {
+            vm.s_img_dropdown_open = false
+          },200)
+        },
+        $mouseenter_header_dropdown() {
+          if (this.editable) {
+            clearTimeout(this.header_timer)
+            this.s_header_dropdown_open = true
+          }
+        },
+        $mouseleave_header_dropdown() {
+          let vm = this
+          this.header_timer = setTimeout(function() {
+            vm.s_header_dropdown_open = false
+          },200)
+        },
+        $clicks(_type) {
+          // 让父节点来绑定事件并
+          if (this.editable) {
+            this.$emit('toolbar_left_click', _type);
+          }
+        },
+        $click_header(_type) {
+          // 让父节点来绑定事件并
+          this.$emit('toolbar_left_click', _type);
+          this.s_header_dropdown_open = false
+        },
+        handleClose(e) {
+          this.s_img_dropdown_open = false;
+        }
+      },
+      watch:{
+        s_img_link_open(newVlaue) {
+          // fix issue #644
+          this.$parent.$el.style.zIndex = newVlaue ? 1501 : 1500;
+        },
+        img_file(val) {
+          this.img_list_show = false
+          // console.log(val)
+          this.$nextTick(() => { // $nextTick 是在 DOM 更新循环结束之后执行延迟回调
+            this.img_list_show = true
+          })
+        }
+      }
     }
 </script>
 <style lang="stylus" scoped>
