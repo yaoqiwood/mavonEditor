@@ -109,7 +109,7 @@ import {
   loadScript,
   ImagePreviewListener
 } from './lib/core/extra-function.js'
-import {stopEvent, mathchRegPicText} from './lib/util.js'
+import {stopEvent, mathchRegPicText, matchRegPicTextV2Index} from './lib/util.js'
 import {toolbar_left_click, toolbar_left_addlink} from './lib/toolbar_left_click.js'
 import {toolbar_right_click} from './lib/toolbar_right_click.js'
 import {CONFIG} from './lib/config.js'
@@ -747,13 +747,16 @@ export default {
         if (!imgArray[key][1]) {
           continue
         }
-        // if (newValue)
+        imgArray[key].isDelete = false
+        let regArray = matchRegPicTextV2Index(newValue, imgArray[key][0])
+        if (regArray != null && regArray.length > 0) continue
+        imgArray[key].isDelete = true
       }
     }
   },
   watch: {
     d_value: function (val, oldVal) {
-      // this.checkTextImgV2(val)
+      this.checkTextImgV2(val)
       // console.log(val)
       // TODO: 这里根据需求要实现一个功能 ： 对图片复制后，对图片块 MD 文字区域进行对比 若发生用户误操作修改文字区域
       // let oldArray = mathchRegPicText(oldVal)

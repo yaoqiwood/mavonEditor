@@ -69,3 +69,10 @@ export function matchRegPicTextV2(str) {
   let regex = /\!\[[^\[\]]+\]\([0-9]{1,9}\)/gm
   return str.match(regex)
 }
+
+export function matchRegPicTextV2Index(str, index) {
+  if (str == null || str === '' || index == null || index === '') return null
+  let regexStr = "/\!\[[^\[\]]+\]\(" + index + "\)/gm"
+  let regex = new RegExp(regexStr)
+  return str.match(regex)
+}
