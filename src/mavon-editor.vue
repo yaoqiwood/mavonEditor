@@ -682,10 +682,12 @@ export default {
     },
     // 比对旧数组 旧数组length 是 null 或者 zero， 则直接return， 否则开始比对size是否相等，若新数组大于旧数组，则去待上传数组中检测是否相等，多还少补，若小于旧数组，则去对应待上传队列删除此多余图片
     checkTextImg(oldArray, newArray) {
-      if (oldArray == null || oldArray.length === 0) return null
+    //   console.log(oldArray)
+    //   console.log(newArray)
+      //   if (oldArray == null || oldArray.length === 0) return null
       let differArray = []
-      console.log(oldArray)
-      console.log(newArray)
+      let isDelete = false
+      // 如果删减操作
       if (newArray.length < oldArray.length) {
         for (let oldKey in oldArray) {
           if (newArray.length === 0) {
@@ -701,8 +703,27 @@ export default {
             }
           }
         }
+        isDelete = true
         // let regex = /\.(jpg|png|gif)\]\([0-9]{1,9}\)$/
+        // 如果还原操作
+      } else if (newArray.length > oldArray.length) {
+        for (let newKey in newArray) {
+          if (oldArray.length === 0) {
+            differArray.push(newArray[newKey])
+            continue
+          }
+          for (let oldKey in oldArray) {
+            if (oldArray[oldKey] === newArray[newKey]) {
+              break
+            }
+            if ((parseInt(oldKey) + 1) === oldArray.length) {
+              differArray.push(newArray[newKey])
+            }
+          }
+        }
+        isDelete = false
       }
+
       console.log("different:")
       console.log(differArray)
       // console.log(this.$refs['toolbar_left'].img_file)
@@ -715,7 +736,7 @@ export default {
         // this.$refs['toolbar_left'].img_file.splice(imgArray[0][0], 1)
         // console.log(this.$refs['toolbar_left'].img_file)
         // this.$refs['toolbar_left'].img_file[imgArray[0][0]].isDelete = true
-        this.$set(this.$refs['toolbar_left'].img_file[imgArray[0][0]],'isDelete', true)
+        this.$set(this.$refs['toolbar_left'].img_file[imgArray[0][0]],'isDelete', isDelete)
         console.log(this.$refs['toolbar_left'].img_file[imgArray[0][0]].isDelete)
       }
     }
@@ -727,7 +748,7 @@ export default {
       let oldArray = mathchRegPicText(oldVal)
       let newArray = mathchRegPicText(val)
 
-      this.checkTextImg(oldArray, newArray == null ? [] : newArray)
+      this.checkTextImg(oldArray == null ? [] : oldArray, newArray == null ? [] : newArray)
       /**
              * TODO: 实行细则 将newValue oldValue进行正则对比 并且以数组添加，如果对比后发生长度一致，则对数组中每一个字符串成员进行对比 相同不做任何操作 相反 则去对应图片队列中删除相应的待上传图片
              */
