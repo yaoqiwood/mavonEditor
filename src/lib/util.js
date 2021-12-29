@@ -71,8 +71,7 @@ export function matchRegPicTextV2(str) {
 }
 
 export function matchRegPicTextV2Index(str, index) {
+  console.log("index:" + index)
   if (str == null || str === '' || index == null || index === '') return null
-  let regexStr = "/\!\[[^\[\]]+\]\(" + index + "\)/gm"
-  let regex = new RegExp(regexStr)
-  return str.match(regex)
+  return str.match("\\!\\[[^\\[\\]]+\\]\\(" + index + "\\)")
 }
