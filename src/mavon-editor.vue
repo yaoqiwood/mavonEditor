@@ -739,16 +739,27 @@ export default {
         this.$set(this.$refs['toolbar_left'].img_file[imgArray[0][0]],'isDelete', isDelete)
         console.log(this.$refs['toolbar_left'].img_file[imgArray[0][0]].isDelete)
       }
+    },
+    checkTextImgV2(newValue) {
+      if (newValue == null || newValue === '') return null
+      let imgArray = this.$refs['toolbar_left'].img_file
+      for (let key in imgArray) {
+        if (!imgArray[key][1]) {
+          continue
+        }
+        // if (newValue)
+      }
     }
   },
   watch: {
     d_value: function (val, oldVal) {
+      // this.checkTextImgV2(val)
       // console.log(val)
       // TODO: 这里根据需求要实现一个功能 ： 对图片复制后，对图片块 MD 文字区域进行对比 若发生用户误操作修改文字区域
-      let oldArray = mathchRegPicText(oldVal)
-      let newArray = mathchRegPicText(val)
+      // let oldArray = mathchRegPicText(oldVal)
+      // let newArray = mathchRegPicText(val)
 
-      this.checkTextImg(oldArray == null ? [] : oldArray, newArray == null ? [] : newArray)
+      // this.checkTextImg(oldArray == null ? [] : oldArray, newArray == null ? [] : newArray)
       /**
              * TODO: 实行细则 将newValue oldValue进行正则对比 并且以数组添加，如果对比后发生长度一致，则对数组中每一个字符串成员进行对比 相同不做任何操作 相反 则去对应图片队列中删除相应的待上传图片
              */

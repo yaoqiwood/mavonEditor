@@ -63,3 +63,9 @@ export function mathchRegPicText(str) {
   let regex = /\!\[[\u4e00-\u9fa5_a-zA-Z0-9@.]{1,100}\.(jpg|png|gif)\]\([0-9]{1,9}\)/gm;
   return str.match(regex)
 }
+
+export function matchRegPicTextV2(str) {
+  if (str == null || str === '') return null
+  let regex = /\!\[[^\[\]]+\]\([0-9]{1,9}\)/gm
+  return str.match(regex)
+}
