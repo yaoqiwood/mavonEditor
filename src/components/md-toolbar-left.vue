@@ -222,7 +222,7 @@
           this.$emit('imgDel', this.img_file[pos]);
           this.$set(this.img_file[pos] ,'isDelete', true)
           //    this.img_file.splice(pos, 1);
-          this.num--;
+          // this.num--;
 
           this.s_img_dropdown_open = false;
         },
