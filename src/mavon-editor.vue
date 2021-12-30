@@ -1,5 +1,5 @@
 <template>
-    <div :class="[{ 'fullscreen': s_fullScreen, 'shadow': boxShadow }]" class="v-note-wrapper markdown-body" :style="{'box-shadow': boxShadow ? boxShadowStyle : ''}">
+    <div ref="main-box" @mouseup="editMouseUp" :class="[{ 'fullscreen': s_fullScreen, 'shadow': boxShadow }]" class="v-note-wrapper markdown-body" :style="{'box-shadow': boxShadow ? boxShadowStyle : ''}">
         <!--工具栏-->
         <div class="v-note-op" v-show="toolbarsFlag" :style="{'background-color': toolbarsBackground}">
             <v-md-toolbar-left ref="toolbar_left" :editable="editable" :transition="transition" :d_words="d_words"
@@ -21,9 +21,12 @@
             </v-md-toolbar-right>
         </div>
         <!--编辑展示区域-->
-        <div class="v-note-panel">
+        <div class="v-note-panel" 
+            @mousemove="editMouseMove"
+            @mousedown="editMouseDown">
             <!--编辑区-->
             <div ref="vNoteEdit" @scroll="$v_edit_scroll" class="v-note-edit divarea-wrapper"
+                :style="{'cursor':editAreaCursorIcon, 'flex': editFlexStyleValue}"
                  :class="{'scroll-style': s_scrollStyle, 'scroll-style-border-radius': s_scrollStyle && !s_preview_switch && !s_html_code, 'single-edit': !s_preview_switch && !s_html_code, 'single-show': (!s_subfield && s_preview_switch) || (!s_subfield && s_html_code), 'transition': transition}"
                  @click="textAreaFocus">
                 <div class="content-input-wrapper" :style="{'background-color': editorBackground}">
@@ -36,7 +39,9 @@
             </div>
             <!--展示区-->
             <div :class="{'single-show': (!s_subfield && s_preview_switch) || (!s_subfield && s_html_code)}"
-                 v-show="s_preview_switch || s_html_code" class="v-note-show">
+                 v-show="s_preview_switch || s_html_code" class="v-note-show"
+                 ref="vNoteContentShow"
+                 :style="{'flex': showFlexStyleValue}">
                 <div ref="vShowContent" v-html="d_render" v-show="!s_html_code"
                      :class="{'scroll-style': s_scrollStyle, 'scroll-style-border-radius': s_scrollStyle}" class="v-show-content"
                      :style="{'background-color': previewBackground}">
@@ -311,8 +316,12 @@ export default {
       p_external_link: {},
       textarea_selectionEnd: 0,
       textarea_selectionEnds: [0],
-      _xssHandler: null
-    };
+      _xssHandler: null,
+      editAreaCursorIcon:'text',
+      isOnClick: false,
+      editFlexValue: 50,
+      previewContentFlexValue: 50
+    }
   },
   created() {
     var $vm = this;
@@ -752,6 +761,65 @@ export default {
         if (regArray != null && regArray.length > 0) continue
         imgArray[key].isDelete = true
       }
+    },
+    editMouseMove(e) {
+      let screenWidth = document.body.clientWidth
+      let mainBoxWidth = this.$refs['main-box'].clientWidth
+      let contentBoxWidth = this.$refs['vNoteContentShow'].clientWidth
+      let leftOffsetWidth = (screenWidth - mainBoxWidth) / 2
+      // console.dir(this.$refs['vNoteEdit'])
+      // 计算中间区域的x值
+      let middleOfMainBoxWidthX = mainBoxWidth - contentBoxWidth + leftOffsetWidth
+      // console.log(contentBoxWidth)
+      // let editBoxClientWidth = this.$refs['vNoteEdit'].clientWidth
+      // let maxEditBoxX = leftOffsetWidth + editBoxClientWidth
+      if (middleOfMainBoxWidthX - e.clientX <= 10 && middleOfMainBoxWidthX - e.clientX > -20) {
+        // console.log(middleOfMainBoxWidthX - e.clientX)
+        this.editAreaCursorIcon = 'e-resize'
+      } else {
+        this.editAreaCursorIcon = 'text'
+      }
+      if (middleOfMainBoxWidthX - e.clientX <= 100 && middleOfMainBoxWidthX - e.clientX > -100) {
+        // console.log("检测到移动")
+        if (!this.isOnClick) return null
+        // console.log("检测到拖动")
+        // 拉伸操作
+        let relativeX = e.clientX - leftOffsetWidth
+        this.editFlexValue = parseInt(relativeX / mainBoxWidth * 100)
+        this.previewContentFlexValue = 100 - this.editFlexValue
+      }
+      // console.log(leftOffsetWidth)
+      // console.log("clientX:" + e.clientX)
+      // console.log("clientWidth:" + this.$refs['vNoteEdit'].clientWidth)
+      // console.log("offsetWidth:" + this.$refs['vNoteEdit'].offsetWidth)
+      // console.dir(this.$refs['vNoteEdit'])
+      // console.log(this.$refs['vNoteEdit'].clientWidth + this.$refs['vNoteEdit'].offsetWidth)
+    },
+    editMouseDown(e) {
+      let screenWidth = document.body.clientWidth
+      let mainBoxWidth = this.$refs['main-box'].clientWidth
+      let contentBoxWidth = this.$refs['vNoteContentShow'].clientWidth
+      let leftOffsetWidth = (screenWidth - mainBoxWidth) / 2
+      // console.dir(this.$refs['vNoteEdit'])
+      // 计算中间区域的x值
+      let middleOfMainBoxWidthX = mainBoxWidth - contentBoxWidth + leftOffsetWidth
+      // console.log(contentBoxWidth)
+      // let editBoxClientWidth = this.$refs['vNoteEdit'].clientWidth
+      // let maxEditBoxX = leftOffsetWidth + editBoxClientWidth
+      // console.log(middleOfMainBoxWidthX - e.clientX)
+      if (middleOfMainBoxWidthX - e.clientX <= 20 && middleOfMainBoxWidthX - e.clientX > -20) {
+        this.isOnClick = true
+        console.log("按下")
+      }
+      // let screenWidth = document.body.clientWidth
+      // let mainBoxWidth = this.$refs['main-box'].clientWidth
+      // let leftOffsetWidth = (screenWidth - mainBoxWidth) / 2
+      // console.log("按下")
+      // console.log(e.clientX - leftOffsetWidth)
+    },
+    editMouseUp(e) {
+      this.isOnClick = false
+      console.log("松开")
     }
   },
   watch: {
@@ -801,6 +869,15 @@ export default {
     codeStyle: function (val) {
       this.codeStyleChange(val)
     }
+  },
+  computed:{
+    editFlexStyleValue () {
+      return '0 0 ' + this.editFlexValue + '%'
+    },
+    showFlexStyleValue () {
+      return '0 0 ' + this.previewContentFlexValue + '%'
+    }
+
   },
   components: {
     'v-autoTextarea': autoTextarea,
