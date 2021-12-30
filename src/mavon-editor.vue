@@ -41,7 +41,7 @@
             <div :class="{'single-show': (!s_subfield && s_preview_switch) || (!s_subfield && s_html_code)}"
                  v-show="s_preview_switch || s_html_code" class="v-note-show"
                  ref="vNoteContentShow"
-                 :style="{'flex': showFlexStyleValue}">
+                 :style="{'cursor':editAreaCursorIcon, 'flex': showFlexStyleValue}">
                 <div ref="vShowContent" v-html="d_render" v-show="!s_html_code"
                      :class="{'scroll-style': s_scrollStyle, 'scroll-style-border-radius': s_scrollStyle}" class="v-show-content"
                      :style="{'background-color': previewBackground}">
@@ -773,21 +773,26 @@ export default {
       // console.log(contentBoxWidth)
       // let editBoxClientWidth = this.$refs['vNoteEdit'].clientWidth
       // let maxEditBoxX = leftOffsetWidth + editBoxClientWidth
-      if (middleOfMainBoxWidthX - e.clientX <= 10 && middleOfMainBoxWidthX - e.clientX > -20) {
+      // console.log(middleOfMainBoxWidthX - e.clientX)
+
+      if (middleOfMainBoxWidthX - e.clientX <= 12 && middleOfMainBoxWidthX - e.clientX > 5) {
         // console.log(middleOfMainBoxWidthX - e.clientX)
+        this.editAreaCursorIcon = 'e-resize'
+      } else if (middleOfMainBoxWidthX - e.clientX > -12 && middleOfMainBoxWidthX - e.clientX  <= -5) {
+        console.log(middleOfMainBoxWidthX - e.clientX)
         this.editAreaCursorIcon = 'e-resize'
       } else {
         this.editAreaCursorIcon = 'text'
       }
-      if (middleOfMainBoxWidthX - e.clientX <= 100 && middleOfMainBoxWidthX - e.clientX > -100) {
-        // console.log("检测到移动")
-        if (!this.isOnClick) return null
-        // console.log("检测到拖动")
-        // 拉伸操作
-        let relativeX = e.clientX - leftOffsetWidth
-        this.editFlexValue = parseInt(relativeX / mainBoxWidth * 100)
-        this.previewContentFlexValue = 100 - this.editFlexValue
-      }
+      // if (middleOfMainBoxWidthX - e.clientX <= 100 && middleOfMainBoxWidthX - e.clientX > -100) {
+      //   // console.log("检测到移动")
+
+      // }
+      if (!this.isOnClick) return null
+      // console.log("检测到拖动")
+      // 拉伸操作
+      let relativeX = e.clientX - leftOffsetWidth
+      this.editFlexValue = parseInt(relativeX / mainBoxWidth * 100)
       // console.log(leftOffsetWidth)
       // console.log("clientX:" + e.clientX)
       // console.log("clientWidth:" + this.$refs['vNoteEdit'].clientWidth)
@@ -807,9 +812,16 @@ export default {
       // let editBoxClientWidth = this.$refs['vNoteEdit'].clientWidth
       // let maxEditBoxX = leftOffsetWidth + editBoxClientWidth
       // console.log(middleOfMainBoxWidthX - e.clientX)
-      if (middleOfMainBoxWidthX - e.clientX <= 20 && middleOfMainBoxWidthX - e.clientX > -20) {
+      // if (middleOfMainBoxWidthX - e.clientX <= 20 && middleOfMainBoxWidthX - e.clientX > -20) {
+      //   this.isOnClick = true
+      //   console.log("按下")
+      // }
+
+      if (middleOfMainBoxWidthX - e.clientX <= 12 && middleOfMainBoxWidthX - e.clientX > 5) {
+        // console.log(middleOfMainBoxWidthX - e.clientX)
         this.isOnClick = true
-        console.log("按下")
+      } else if (middleOfMainBoxWidthX - e.clientX > -12 && middleOfMainBoxWidthX - e.clientX  <= -5) {
+        this.isOnClick = true
       }
       // let screenWidth = document.body.clientWidth
       // let mainBoxWidth = this.$refs['main-box'].clientWidth
@@ -868,10 +880,19 @@ export default {
     },
     codeStyle: function (val) {
       this.codeStyleChange(val)
+    },
+    s_preview_switch(newVal,oldVal) {
+      if (!newVal) {
+        this.editFlexValue = 100
+      } else {
+        this.editFlexValue = 50
+        this.previewContentFlexValue = 50
+      }
     }
   },
   computed:{
     editFlexStyleValue () {
+      this.previewContentFlexValue = 100 - this.editFlexValue
       return '0 0 ' + this.editFlexValue + '%'
     },
     showFlexStyleValue () {
