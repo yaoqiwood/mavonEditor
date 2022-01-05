@@ -137,18 +137,18 @@ const coverterMark = {
 }
 // 图片
 const converterImg = {
-    filter: 'img',
-    replacement: function(content, tag) {
-        var rel = tag.getAttribute('rel');
-        var alt = tag.getAttribute('alt');
-        if (rel && alt) {
-            return '![' + alt + ']' + '(' + rel + ')'
-        }
-        else {
-            var src = tag.getAttribute('src');
-            return '![' + alt + ']' + '(' + src + ')'
-        }
+  filter: 'img',
+  replacement: function(content, tag) {
+    var rel = tag.getAttribute('rel');
+    var alt = tag.getAttribute('alt');
+    if (rel && alt) {
+      return '![' + alt + ']' + '(' + rel + ')'
     }
+    else {
+      var src = tag.getAttribute('src');
+      return '![' + alt + ']' + '(' + src + ')'
+    }
+  }
 }
 var tomarkdown = function (str) {
   return toMarkdown(str, {

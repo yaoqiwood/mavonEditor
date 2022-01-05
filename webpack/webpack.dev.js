@@ -16,47 +16,47 @@ var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 var config = {
-    entry: {
-        index: './src/dev/index.js',
-        vue: ['vue']
+  entry: {
+    index: './src/dev/index.js',
+    vue: ['vue']
+  },
+  output: {
+    path: path.resolve(__dirname, '../dist'),
+    // publicPath: '/dist/',
+    filename: 'js/[name].[chunkhash:8].js',
+    chunkFilename: 'js/[name].[chunkhash:8].js'
+  },
+  resolve: {
+    alias: {
+      'vue$': 'vue/dist/vue.esm.js',
+      'muse-components': 'muse-ui/src'
     },
-    output: {
-        path: path.resolve(__dirname, '../dist'),
-        // publicPath: '/dist/',
-        filename: 'js/[name].[chunkhash:8].js',
-        chunkFilename: 'js/[name].[chunkhash:8].js'
-    },
-    resolve: {
-        alias: {
-            'vue$': 'vue/dist/vue.esm.js',
-            'muse-components': 'muse-ui/src'
-        },
-        extensions: ['.js', '.vue', '.less']
-    },
-    devServer: {
-        historyApiFallback: true,
-        disableHostCheck: true,
-        host: 'localhost',
-        port: '9090',        
-        stats: 'normal'
-    },
-    devtool: 'source-map'
+    extensions: ['.js', '.vue', '.less']
+  },
+  devServer: {
+    historyApiFallback: true,
+    disableHostCheck: true,
+    host: 'localhost',
+    port: '9090',
+    stats: 'normal'
+  },
+  devtool: 'source-map'
 }
 
 var res = merge([base, config]);
 res.plugins = [
-    new webpack.optimize.CommonsChunkPlugin({
-        names: ['vue', 'common'],
-        filename: 'js/[name].[chunkhash:8].js',
-        minChunks: Infinity
-    }),
-    new HtmlWebpackPlugin({
-        filename: 'index.html',
-        template: 'src/dev/index.html',
-        inject: true,
-        hash: false,
-        chunks: ['common', 'vue', 'index']
-    })
+  new webpack.optimize.CommonsChunkPlugin({
+    names: ['vue', 'common'],
+    filename: 'js/[name].[chunkhash:8].js',
+    minChunks: Infinity
+  }),
+  new HtmlWebpackPlugin({
+    filename: 'index.html',
+    template: 'src/dev/index.html',
+    inject: true,
+    hash: false,
+    chunks: ['common', 'vue', 'index']
+  })
 ].concat(res.plugins)
 
 module.exports = res

@@ -1,15 +1,11 @@
 # 感谢大佬的无私分享，这次决定Fork过来主要还是想说能不能修改一些更有趣的内容进行来丰富博客系统
+# 新增npm源
 
 - [x] 完成了工具栏的基本颜色更改和图片颜色更改 #846fb2
 - [x] 增加实时检测文本框内图片文字正则校验并动态删除上传队列中的图片的功能
 - [x] 另外新增一个图片上传前文本校验的功能 若没有找到
 - [x] 增加一个左右拉伸方框的功能
 
-# mavonEditor
-
-| Vue2 | [![npm](https://img.shields.io/npm/v/mavon-editor/latest.svg)](https://www.npmjs.com/package/mavon-editor/v/latest) |
-| ---- | ------------------------------------------------------------ |
-| **Vue3** | [![npm](https://img.shields.io/npm/v/mavon-editor/next.svg)](https://www.npmjs.com/package/mavon-editor/v/next) |
 
 ### [English Documents](./README-EN.md)
 [Demo for jsfiddle](https://jsfiddle.net/CHENXCHEN/qf7gLw3a/3/)
@@ -18,16 +14,12 @@
 
 ### PC
 
-![PC](./img/cn/cn-common.png)
+![PC](./img/cn/nbewdownload.png)
 
-![PC](./img/cn/cn-image.gif)
-
-> [查看更多图片点击这里...](./doc/cn/images.md)
-
-### Install mavon-editor (安装)
+### Install mikko-mavon-editor (安装)
 
 ```
-$ npm install mavon-editor --save
+$ npm install mikko-mavon-editor --save
 ```
 
 ### Use (如何引入)
@@ -37,10 +29,10 @@ $ npm install mavon-editor --save
     // 全局注册
     // import with ES6
     import Vue from 'vue'
-    import mavonEditor from 'mavon-editor'
+    import MikkoMavonEditor from 'mikko-mavon-editor'
     import 'mavon-editor/dist/css/index.css'
     // use
-    Vue.use(mavonEditor)
+    Vue.use(MikkoMavonEditor)
     new Vue({
         'el': '#main',
         data() {
@@ -53,52 +45,6 @@ $ npm install mavon-editor --save
 <div id="main">
     <mavon-editor v-model="value"/>
 </div>
-```
-### 如何在nuxt.js 中使用
-> 首先在工程目录plugins 下新建 vue-mavon-editor.js
-```javascrpt 
-import Vue from 'vue';
-import mavonEditor from 'mavon-editor';
-import 'mavon-editor/dist/css/index.css';
-
-Vue.use(mavonEditor);
-```
-> 然后在nuxt.config.js 中添加plugins配置
-```javascript
-  plugins: [
-  ...
-    { src: '@/plugins/vue-mavon-editor', ssr: false }
-  ],
-```
-> 最后一步在页面或者组件中引入
-```vue
-<template>
-  <div class="mavonEditor">
-    <no-ssr>
-      <mavon-editor :toolbars="markdownOption" v-model="handbook"/>
-    </no-ssr>
-  </div>
-</template>
-<script>
-export default {
-  data() {
-    return {
-      markdownOption: {
-        bold: true, // 粗体
-        ... // 更多配置
-      },
-      handbook: "#### how to use mavonEditor in nuxt.js"
-    };
-  }
-};
-</script>
-
-<style scoped>
-.mavonEditor {
-  width: 100%;
-  height: 100%;
-}
-</style>
 ```
 
 
