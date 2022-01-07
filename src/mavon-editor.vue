@@ -733,8 +733,8 @@ export default {
         isDelete = false
       }
 
-      console.log("different:")
-      console.log(differArray)
+      // console.log("different:")
+      // console.log(differArray)
       // console.log(this.$refs['toolbar_left'].img_file)
       if (differArray.length === 0) return null
       for (let key in differArray) {
@@ -746,7 +746,7 @@ export default {
         // console.log(this.$refs['toolbar_left'].img_file)
         // this.$refs['toolbar_left'].img_file[imgArray[0][0]].isDelete = true
         this.$set(this.$refs['toolbar_left'].img_file[imgArray[0][0]],'isDelete', isDelete)
-        console.log(this.$refs['toolbar_left'].img_file[imgArray[0][0]].isDelete)
+        // console.log(this.$refs['toolbar_left'].img_file[imgArray[0][0]].isDelete)
       }
     },
     checkTextImgV2(newValue) {
@@ -779,7 +779,7 @@ export default {
         // console.log(middleOfMainBoxWidthX - e.clientX)
         this.editAreaCursorIcon = 'e-resize'
       } else if (middleOfMainBoxWidthX - e.clientX > -12 && middleOfMainBoxWidthX - e.clientX  <= -5) {
-        console.log(middleOfMainBoxWidthX - e.clientX)
+        // console.log(middleOfMainBoxWidthX - e.clientX)
         this.editAreaCursorIcon = 'e-resize'
       } else {
         this.editAreaCursorIcon = 'text'
@@ -831,7 +831,10 @@ export default {
     },
     editMouseUp(e) {
       this.isOnClick = false
-      console.log("松开")
+    },
+    // 获取待上传队列
+    getUploadImgList() {
+      return this.$refs['toolbar_left'].img_file.filter(item =>  item.isDelete !== undefined && !item.isDelete)
     }
   },
   watch: {
